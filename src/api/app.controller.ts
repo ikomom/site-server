@@ -14,7 +14,7 @@ import {
 import { AppService } from './app.service';
 import { Request, Response } from 'express';
 import { CreateCatDto } from './app.dto';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { HttpExceptionFilter } from '../filters/http-exception.filter';
 
 @Controller()
 export class AppController {
