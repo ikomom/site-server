@@ -7,9 +7,7 @@ export class CatsService {
 
   // service 被控制的依赖也能注入其他依赖,
   // 但是不能在constructor注入自己，因为依赖注入未完成
-  constructor(
-    @Inject('commonValue') private readonly commonValue,
-  ) {
+  constructor(@Inject('commonValue') private readonly commonValue) {
     // this.cats.push(commonValue)
   }
 
