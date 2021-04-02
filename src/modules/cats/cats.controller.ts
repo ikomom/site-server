@@ -1,7 +1,19 @@
-import { Body, Controller, Get, Inject, Optional, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Optional,
+  Post,
+  UseGuards, UseInterceptors,
+  UsePipes
+} from '@nestjs/common'
 import { CatsService } from './cats.service';
 import { CreateCatDto } from '../../app.dto';
 import { Cat } from './cats.interface';
+import { AuthGuard } from '../../guard/auth.guard';
+import { Roles } from '../../guard/auth.decorator';
+import { LoggingInterceptor } from '../../interceptor/logging.interceptor'
 
 @Controller('cats')
 export class CatsController {
@@ -12,18 +24,24 @@ export class CatsController {
   ) {}
 
   @Post()
+  @Roles('admin')
+  @UseGuards(AuthGuard)
   async addCat(@Body() createCatDto: CreateCatDto) {
     await this.catsService.add(createCatDto);
     return {
       code: 0,
       message: '添加成功',
-      ...this.commonValue,
-      a: this.coom + '11',
     };
   }
 
+  @Post('pipe')
+  async addCatPipe(@Body() createCatDto: CreateCatDto) {
+    return this.addCat(createCatDto);
+  }
+
   @Get()
-  async findAll(): Promise<Cat[]> {
+  @UseInterceptors(LoggingInterceptor)
+  async findAll(@Body() body: any): Promise<Cat[]> {
     return this.catsService.findAll();
   }
 }
