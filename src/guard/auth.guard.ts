@@ -1,7 +1,7 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, Controller} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { CatsService } from '../modules/cats/cats.service'
+import { CatsService } from '../modules/cats/cats.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -12,9 +12,16 @@ export class AuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const type = context.getType();
-    const classes = context.getClass();
+    const classRole = this.reflector.get<string[]>('roles', context.getClass());
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
-
+    const rolesOver = this.reflector.getAllAndOverride<string[]>('roles', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    const rolesMerge = this.reflector.getAllAndMerge<string[]>('roles', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     if (roles.includes(this.catService.key)) {
       return true;
     }
@@ -23,6 +30,7 @@ export class AuthGuard implements CanActivate {
 }
 
 function validateRequest(request: Request) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   if (request.headers.jwt) {
     return true;

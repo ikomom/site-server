@@ -5,16 +5,17 @@ import {
   Inject,
   Optional,
   Post,
-  UseGuards, UseInterceptors,
-  UsePipes
-} from '@nestjs/common'
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from '../../app.dto';
 import { Cat } from './cats.interface';
 import { AuthGuard } from '../../guard/auth.guard';
 import { Roles } from '../../guard/auth.decorator';
-import { LoggingInterceptor } from '../../interceptor/logging.interceptor'
+import { LoggingInterceptor } from '../../interceptor/logging.interceptor';
 
+@Roles('cats')
 @Controller('cats')
 export class CatsController {
   constructor(
