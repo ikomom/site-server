@@ -12,6 +12,7 @@ import { DogsModule, CatsModule } from './modules';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Logger } from './utils/log4js';
+import { ConfigModule } from './modules/config/config.module'
 
 const commonValueProvider = {
   provide: 'commonValue',
@@ -39,11 +40,12 @@ export class CoreModule {}
           password: '123456',
           database: 'testdb',
           autoLoadModels: true,
-          // synchronize: true,
+          synchronize: true,
           logging: (msg) => Logger.log(msg),
         };
       },
     }),
+    ConfigModule,
     CoreModule,
     DogsModule,
     CatsModule,

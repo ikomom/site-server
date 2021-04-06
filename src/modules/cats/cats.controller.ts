@@ -1,19 +1,23 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Optional,
+  Param,
+  Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from '../../app.dto';
-import { Cat } from './cats.interface';
 import { AuthGuard } from '../../guard/auth.guard';
 import { Roles } from '../../guard/auth.decorator';
 import { LoggingInterceptor } from '../../interceptor/logging.interceptor';
+import { Cat } from './cats.interface';
 
 @Roles('cats')
 @Controller('cats')
@@ -42,7 +46,30 @@ export class CatsController {
 
   @Get()
   @UseInterceptors(LoggingInterceptor)
-  async findAll(@Body() body: any): Promise<Cat[]> {
+  async findAll(): Promise<Cat[]> {
     return this.catsService.findAll();
+  }
+
+  @Get('/findOne')
+  async findOneByName(@Query() query: any) {
+    return this.catsService.findByName(query.name);
+  }
+
+  @Patch(':id')
+  async updateById(@Body() createCatDto: Cat, @Param() params) {
+    const msg = await this.catsService.updateById(params.id, createCatDto);
+    return {
+      code: 200,
+      msg: msg,
+    };
+  }
+
+  @Delete(':id')
+  async deleteById(@Param() params) {
+    const msg = await this.catsService.deleteById(params.id);
+    return {
+      code: 200,
+      msg: msg,
+    };
   }
 }

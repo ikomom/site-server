@@ -7,4 +7,8 @@ export class CreateCatDto {
   readonly age: number;
   @IsString()
   readonly breed: string;
+  @IsString()
+  readonly color: string;
+  @IsString()
+  readonly master: string;
 }

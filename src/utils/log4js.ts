@@ -102,41 +102,41 @@ const logger = Log4js.getLogger();
 logger.level = LoggerLevel.TRACE;
 
 export class Logger {
-  static trace(...args) {
-    logger.trace(Logger.getStackTrace(), ...args);
+  static trace(msg, args?) {
+    logger.trace(msg, args !== undefined ? args : '');
   }
 
-  static debug(...args) {
-    logger.debug(Logger.getStackTrace(), ...args);
+  static debug(msg, args?) {
+    logger.debug(msg, args !== undefined ? args : '');
   }
 
-  static log(...args) {
-    logger.info(Logger.getStackTrace(), ...args);
+  static log(msg, args?) {
+    logger.info(msg, args !== undefined ? args : '');
   }
 
-  static info(...args) {
-    logger.info(Logger.getStackTrace(), ...args);
+  static info(msg, args?) {
+    logger.info(msg, args !== undefined ? args : '');
   }
 
-  static warn(...args) {
-    logger.warn(Logger.getStackTrace(), ...args);
+  static warn(msg, args?) {
+    logger.warn(msg, args !== undefined ? args : '');
   }
 
-  static warning(...args) {
-    logger.warn(Logger.getStackTrace(), ...args);
+  static warning(msg, args?) {
+    logger.warn(msg, args !== undefined ? args : '');
   }
 
-  static error(...args) {
-    logger.error(Logger.getStackTrace(), ...args);
+  static error(msg, args?) {
+    logger.error(msg, args !== undefined ? args : '');
   }
 
-  static fatal(...args) {
-    logger.fatal(Logger.getStackTrace(), ...args);
+  static fatal(msg, args?) {
+    logger.fatal(msg, args !== undefined ? args : '');
   }
 
-  static access(...args) {
+  static access(msg, args?) {
     const loggerCustom = Log4js.getLogger('http');
-    loggerCustom.info(Logger.getStackTrace(), ...args);
+    loggerCustom.info(msg, args !== undefined ? args : '');
   }
 
   // 日志追踪，可以追溯到哪个文件、第几行第几列

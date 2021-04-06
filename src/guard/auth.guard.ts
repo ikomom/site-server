@@ -22,9 +22,9 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (roles.includes(this.catService.key)) {
-      return true;
-    }
+    // if (roles.includes(this.catService.key)) {
+    //   return true;
+    // }
     return validateRequest(request);
   }
 }

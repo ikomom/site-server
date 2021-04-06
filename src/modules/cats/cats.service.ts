@@ -1,29 +1,61 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cat } from './cats.interface';
-import { ContextIdFactory, ModuleRef } from '@nestjs/core';
+import { InjectModel } from '@nestjs/sequelize';
+import { Cats } from '../../models/cats.model';
+import { plainToClass } from 'class-transformer';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class CatsService {
-  private readonly cats: Cat[] = [];
-  readonly key: string = 'admin';
-
-  // service 被控制的依赖也能注入其他依赖,
-  // 但是不能在constructor注入自己，因为依赖注入未完成
-  constructor(
-    @Inject('commonValue') private readonly commonValue,
-    private moduleRef: ModuleRef,
-  ) {
+  constructor(@InjectModel(Cats) private catsModel: typeof Cats) {
     // this.cats.push(commonValue)
   }
 
   async add(cat: Cat) {
-    const val = this.moduleRef.get('commonValue', { strict: false });
-    const contextId = ContextIdFactory.create();
-
-    this.cats.push(cat);
+    try {
+      await plainToClass(Cats, cat).save();
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
-  findAll(): Cat[] {
-    return this.cats;
+  async findByName(name: string) {
+    return this.catsModel.findAndCountAll({
+      where: {
+        name: {
+          [Op.like]: `%${name}%`,
+        },
+      },
+    });
+  }
+
+  async findAll(): Promise<Cats[]> {
+    return this.catsModel.findAll();
+  }
+
+  async findById(id: number) {
+    return this.catsModel.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async updateById(id: number, cat: Cat) {
+    const findResult = await this.findById(id);
+    if (!findResult) {
+      return '数据不存在';
+    }
+    await findResult.update(cat);
+    return '更新成功';
+  }
+
+  async deleteById(id: number) {
+    const findResult = await this.findById(id);
+    if (!findResult) {
+      return '数据不存在';
+    }
+    await findResult.destroy();
+    return '删除成功';
   }
 }
